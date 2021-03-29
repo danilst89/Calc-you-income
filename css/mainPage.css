@@ -1,0 +1,80 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#mainPage {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    text-align: center;
+}
+
+#mainPage h1 {
+    text-align: center;
+    color: #fff;
+    animation-name: slideUp;
+    animation-duration: 1.5s;
+    margin-top: 10%;
+}
+
+#mainPage h2 {
+    color: #fff;
+    margin-top: 20px;
+    animation-name: show;
+    animation-duration: 1.5s;
+    white-space: nowrap;
+}
+
+#mainPage input {
+    margin-top: 20px;
+    border-radius: 2px;
+    width: 250px;
+    height: 40px;
+}
+
+#mainPage input:invalid {
+    border: 2px solid red;
+}
+
+#mainPage button {
+    display: block;
+    background-color: #fff;
+    margin: 30px auto 0 auto;
+    width: 150px;
+    height: 50px;
+    border: 0;
+    border-radius: 2px;
+    transition: .2s all;
+    animation-name: show;
+    animation-duration: 1.5s;
+}
+
+#mainPage button:hover {
+    background-color: rgb(36, 36, 36);
+    color: #fff;
+    cursor: pointer;
+}
+
+@keyframes slideUp {
+    from {
+        margin-top: 20%;
+    }
+
+    to {
+        margin-top: 10%;
+    }
+}
+
+@keyframes show {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
