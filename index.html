@@ -7,6 +7,7 @@
     <link rel='stylesheet' href='css/mainPage.css'>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
@@ -33,7 +34,51 @@
         </form>
     </div>
     <div id='root'>
-        
+        <div class="modalBudget">
+            <div class='divForModalBudget'>
+                <span class="material-icons closeModal">
+                    close
+                </span>
+                <h1>На что ушли ваши деньги сегодня?</h1>
+                <h2>Покупка</h2>
+                <input type="text" placeholder="Тут буквы">
+                <h2>Цена</h2>
+                <input type="number" placeholder="А тут цифры">
+                <button class='addInUlBudget'>Добавить</button>
+            </div>
+        </div>
+        <div id="main">
+            <div class="width">
+                <h2>Бюджет</h2>
+                <span class="material-icons payments">
+                    payments
+                </span>
+                <h3 class="budgetCounter">0</h3>
+                <a href='#' class="material-icons add">
+                    add
+                </a>
+                <ul class="budgetList">
+                    <li>
+                        <div>Подарок на день рождения</div>
+                        <div>2000</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="width">
+                <h2>Рассходы</h2>
+                <span class="material-icons payments">
+                    production_quantity_limits
+                </span>
+            </div>
+
+            <div class="width">
+                <h2>Баланс</h2>
+                <span class="material-icons payments">
+                    attach_money
+                </span>
+            </div>
+        </div>
     </div>
     <script src='js/helloPage.js'></script>
 </body>

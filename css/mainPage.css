@@ -59,6 +59,140 @@
     cursor: pointer;
 }
 
+#root {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    text-align: center;
+}
+
+#root h2 {
+    color: #fff;
+}
+
+#root #main .payments {
+    font-size: 70px;
+    color: #fff;
+    margin-top: 10px;
+}
+
+#root #main .add {
+    color: #fff;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+#root #main {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 70px;
+    animation-name: marginTop;
+    animation-duration: 1.5s;
+}
+
+#root #main .budgetCounter{
+    margin-top: 10px;
+    color: #fff;
+}
+
+#root .modalBudget {
+    background: rgba(0, 0, 0, .6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.divForModalBudget {
+    position: relative;
+    height: 500px;
+    width: 400px;
+    background-color: #fff;
+    animation-name: show;
+    animation-duration: 1s;
+    padding: 10px;
+}
+
+#root .divForModalBudget h1 {
+    color: #000;
+    margin-top: 15px;
+}
+
+#root .divForModalBudget h2 {
+    color: #000;
+    margin-top: 30px;
+    font-size: 25px;
+}
+
+#root .divForModalBudget button {
+    display: block;
+    margin: 50px auto 0 auto;
+    width: 150px;
+    height: 50px;
+    border: 0;
+    border-radius: 2px;
+    transition: .2s all;
+    animation-name: show;
+    animation-duration: 1.5s;
+    background-color: rgb(36, 36, 36);
+    color: #fff;
+}
+
+#root .divForModalBudget button:hover {
+    cursor: pointer;
+    background-color: rgb(195, 195, 195);
+    color: #000;
+}
+
+#root .divForModalBudget input {
+    margin-top: 20px;
+    width: 250px;
+    height: 30px;
+}
+
+#root .budgetList {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.width {
+    width: 100%;
+}
+
+#root .budgetList li {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+}
+
+.closeModal {
+    display: block;
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    right: -20px;
+    background-color: #fff;
+    text-align: right;
+    cursor: pointer;
+}
+
+#root .hideModal {
+    opacity: 0;
+    animation-name: hide;
+    animation-duration: 1s;
+}
+
+.showModal {
+    display: flex;
+}
+
 @keyframes slideUp {
     from {
         margin-top: 20%;
@@ -76,5 +210,25 @@
 
     to {
         opacity: 1;
+    }
+}
+
+@keyframes hide {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes marginTop {
+    from {
+        margin-top: 0;
+    }
+
+    to {
+        margin-top: 70px;
     }
 }
