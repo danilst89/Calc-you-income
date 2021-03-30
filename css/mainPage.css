@@ -86,7 +86,7 @@
 #root #main {
     display: flex;
     justify-content: space-around;
-    margin-top: 70px;
+    margin-top: 120px;
     animation-name: marginTop;
     animation-duration: 1.5s;
 }
@@ -96,7 +96,36 @@
     color: #fff;
 }
 
+#root #main .expenseCounter {
+    margin-top: 10px;
+    color: #fff;
+}
+
 #root .modalBudget {
+    background: rgba(0, 0, 0, .6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#root .modalBalance {
+    background: rgba(0, 0, 0, .6);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#root .modalExpenses {
     background: rgba(0, 0, 0, .6);
     position: absolute;
     top: 0;
@@ -118,6 +147,28 @@
     padding: 10px;
 }
 
+.closeModalScroll {
+    display: block;
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    right: -20px;
+    background-color: #fff;
+    text-align: right;
+    cursor: pointer;
+}
+
+.closeModalExpense {
+    display: block;
+    font-size: 20px;
+    position: absolute;
+    top: 0;
+    right: -20px;
+    background-color: #fff;
+    text-align: right;
+    cursor: pointer;
+}
+
 #root .divForModalBudget h1 {
     color: #000;
     margin-top: 15px;
@@ -127,6 +178,10 @@
     color: #000;
     margin-top: 30px;
     font-size: 25px;
+}
+
+#root .divForModalBudget .smallTextBalance {
+    font-size: 11px;
 }
 
 #root .divForModalBudget button {
@@ -160,6 +215,11 @@
     width: 100%;
 }
 
+#root .expenseList {
+    margin-top: 20px;
+    width: 100%;
+}
+
 .width {
     width: 100%;
 }
@@ -170,6 +230,23 @@
     justify-content: space-between;
     align-items: center;
     color: #fff;
+    margin-top: 10px;
+    padding: 0 10px;
+}
+
+#root #main #expenseMargin {
+    margin-top: 20px;
+}
+
+#root .expenseList li {
+    border-right: 2px solid #fff; 
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    margin-top: 10px;
+    padding: 0 10px;
 }
 
 .closeModal {
@@ -183,6 +260,23 @@
     cursor: pointer;
 }
 
+.savingMoney {
+    color: #fff;
+    margin-top: 10px;
+}
+
+.addScroll {
+    text-decoration: none;
+    color: #fff;
+    margin-top: 10px;
+}
+
+.addExpenses {
+    text-decoration: none;
+    color: #fff;
+    margin-top: 10px;
+}
+
 #root .hideModal {
     opacity: 0;
     animation-name: hide;
@@ -191,6 +285,30 @@
 
 .showModal {
     display: flex;
+}
+
+#root .divForModalBudget .addRangeButton {
+    display: block;
+    margin: 100px auto 0 auto;
+    width: 150px;
+    height: 50px;
+    border: 0;
+    border-radius: 2px;
+    transition: .2s all;
+    animation-name: show;
+    animation-duration: 1.5s;
+    background-color: rgb(36, 36, 36);
+    color: #fff;
+}
+
+#root .divForModalBudget .balanceHeader {
+    margin-bottom: 60px;
+}
+
+#root .divForModalBudget .addRangeButton:hover {
+    cursor: pointer;
+    background-color: rgb(195, 195, 195);
+    color: #000;
 }
 
 @keyframes slideUp {
@@ -229,6 +347,6 @@
     }
 
     to {
-        margin-top: 70px;
+        margin-top: 120px;
     }
 }

@@ -39,44 +39,77 @@
                 <span class="material-icons closeModal">
                     close
                 </span>
-                <h1>На что ушли ваши деньги сегодня?</h1>
-                <h2>Покупка</h2>
-                <input type="text" placeholder="Тут буквы">
-                <h2>Цена</h2>
-                <input type="number" placeholder="А тут цифры">
+                <h1>Сколько и откуда вы получили деньги?</h1>
+                <h2>Источник</h2>
+                <input class='itemBudget' type="text" placeholder="Тут буквы">
+                <h2>Сумма</h2>
+                <input class='counterBudget' type="number" placeholder="А тут цифры">
                 <button class='addInUlBudget'>Добавить</button>
             </div>
         </div>
         <div id="main">
             <div class="width">
-                <h2>Бюджет</h2>
+                <h2>Бюджет на месяц</h2>
                 <span class="material-icons payments">
                     payments
                 </span>
                 <h3 class="budgetCounter">0</h3>
+                <a href='#' class="material-icons addScroll">
+                    add
+                </a>
+            </div>
+
+            <div class="modalBalance">
+                <div class='divForModalBudget'>
+                    <span class="material-icons closeModalScroll">
+                        close
+                    </span>
+                    <h1 class="balanceHeader">Сколько вы хотите взять из сбережений?<span class="smallTextBalance">(если хотите перевести в сбережения, введите сумму с минусом)</span></h1>
+                    <input class="rangeInput" type="range">
+                    <input placeholder="Тут можно менять цифри" class='rangeValue' type="number">
+                    <button class='addRangeButton'>Взять/Положить</button>
+                </div>
+            </div>
+            <div class="width">
+                <h2>Рассходы</h2>
+                <span id='expenseMargin' class="material-icons payments">
+                    production_quantity_limits
+                </span>
+                <h3 class="expenseCounter">0</h3>
+                <a href='#' class="material-icons addExpenses">
+                    add
+                </a>
+                <ul class="expenseList">
+                    
+                </ul>
+            </div>
+
+            <div class="modalExpenses">
+                <div class='divForModalBudget'>
+                    <span class="material-icons closeModalExpense">
+                        close
+                    </span>
+                    <h1>Сколько и на что вы потратили деньги?</h1>
+                    <h2>Предмет</h2>
+                    <input class='itemExpense' type="text" placeholder="Тут буквы">
+                    <h2>Сумма</h2>
+                    <input class='counterExpense' type="number" placeholder="А тут цифры">
+                    <button class='addInUlExpense'>Добавить</button>
+                </div>
+            </div>
+
+            <div class="width">
+                <h2>Текущие сбережения</h2>
+                <span class="material-icons payments">
+                    attach_money
+                </span>
+                <h3 class="savingMoney">0</h3>
                 <a href='#' class="material-icons add">
                     add
                 </a>
                 <ul class="budgetList">
-                    <li>
-                        <div>Подарок на день рождения</div>
-                        <div>2000</div>
-                    </li>
+                    
                 </ul>
-            </div>
-
-            <div class="width">
-                <h2>Рассходы</h2>
-                <span class="material-icons payments">
-                    production_quantity_limits
-                </span>
-            </div>
-
-            <div class="width">
-                <h2>Баланс</h2>
-                <span class="material-icons payments">
-                    attach_money
-                </span>
             </div>
         </div>
     </div>
