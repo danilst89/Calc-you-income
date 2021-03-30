@@ -7,8 +7,6 @@ class helloPage {
         this.root = document.querySelector('#root');
         this.income = document.querySelector('#income');
         this.saving = document.querySelector('#saving');
-        this.select1 = document.querySelector('#select1');
-        this.select2 = document.querySelector('#select2');
         this.sendData = document.querySelector('#sendHelloPage');
         this.budget = document.querySelector('.budgetCounter');
         this.add = document.querySelector('.add');
@@ -35,15 +33,6 @@ class helloPage {
         this.expense = document.querySelector('.expenseCounter');
     }
 
-    addListeners(elementValidate, nameLocalStrorage) { // Добавлюю обработчики событий на inputы
-        // Добавление на select
-        localStorage.setItem(nameLocalStrorage, elementValidate.value);
-
-        elementValidate.addEventListener('input', (e) => {
-            localStorage.setItem(nameLocalStrorage, e.target.value);
-        });
-    }
-
     checkLocalStorage() {
         if (localStorage.getItem('counterIncome') && localStorage.getItem('counterSaving')) {
             this.mainPage.style.display = 'none';
@@ -68,8 +57,6 @@ class helloPage {
         // Проверка localstorage
         this.checkLocalStorage()
         // Добавление на select обработчиков
-        this.addListeners(this.select1, 'valueIncome');
-        this.addListeners(this.select2, 'valueSaving');
         // Навешивание обработчика на кнопку
         this.onSubmit();
     }
@@ -80,79 +67,88 @@ class rootElement extends helloPage {
         super();
     }
 
-    render() {
-        this.modalBalance.classList.add('hideModal');
-        this.modalBalance.style.display = 'none';
-        this.modalBalance.classList.remove('showModal');
-        this.modalBudget.classList.add('hideModal');
-        this.modalBudget.style.display = 'none';
-        this.modalBudget.classList.remove('showModal');
-        this.modalExpenses.classList.add('hideModal');
-        this.modalExpenses.style.display = 'none';
-        this.modalExpenses.classList.remove('showModal');
+    addAndRemoveClasses(selector) {
+        selector.classList.add('hideModal');
+        selector.style.display = 'none';
+        selector.classList.remove('showModal');
+    }
+
+    addCounterSum() {
         this.budget.innerHTML = localStorage.getItem('counterIncome');
         this.savingMoney.innerHTML = localStorage.getItem('counterSaving');
+    }
+
+    render() {
+        this.addAndRemoveClasses(this.modalBalance);
+        this.addAndRemoveClasses(this.modalBudget);
+        this.addAndRemoveClasses(this.modalExpenses);
+        this.addCounterSum();
         this.addListenerClick();
         this.checkBudgetList();
         this.addListenersRange();
     }
 
-    addListenersRange() {
+    setAttributesScrol() {
         this.rangeInput.setAttribute('max', this.savingMoney.innerHTML);
         this.rangeInput.setAttribute('min', -this.budget.innerHTML);
+    }
+
+    addListenersRange() {
+        this.rangeInput.removeEventListener('input', () => {
+            this.rangeValue.value = this.rangeInput.value;
+            this.setAttributesScrol();
+        });
+        this.rangeValue.removeEventListener('input', () => {
+            this.rangeInput.value = this.rangeValue.value;
+            checkCorrectData(this.rangeValue.value);
+            this.setAttributesScrol();
+        });
+        const checkCorrectData = (data) => {
+            if (+data < -this.budget.innerHTML) {
+                this.rangeValue.value = -this.budget.innerHTML;
+            } else if (+data > +this.savingMoney.innerHTML) {
+                this.rangeValue.value = this.savingMoney.innerHTML;
+            }
+        }
         this.rangeInput.addEventListener('input', () => {
             this.rangeValue.value = this.rangeInput.value;
+            this.setAttributesScrol();
         });
         this.rangeValue.addEventListener('input', () => {
             this.rangeInput.value = this.rangeValue.value;
-        })
+            checkCorrectData(this.rangeValue.value);
+            this.setAttributesScrol();
+        });
+        this.setAttributesScrol();
+    }
+
+    addCloseClasses(elementListener, elementWhoNeedDisplayNone) {
+        elementListener.addEventListener('click', () => {
+            elementWhoNeedDisplayNone.classList.add('hideModal');
+            setTimeout(() => {
+                elementWhoNeedDisplayNone.style.display = 'none';
+            }, 1000);
+            elementWhoNeedDisplayNone.classList.remove('showModal');
+        });
+    }
+
+    addListenerOnAddTrigger(elementListener, elementWhoNeedDisplayFlex) {
+        elementListener.addEventListener('click', (e) => {
+            e.preventDefault();
+            elementWhoNeedDisplayFlex.classList.add('showModal');
+            elementWhoNeedDisplayFlex.style.display = 'flex';
+            elementWhoNeedDisplayFlex.classList.remove('hideModal');
+        });
     }
 
     addListenerClick() {
-        this.closeModalBudget.addEventListener('click', () => {
-            this.modalBudget.classList.add('hideModal');
-            setTimeout(() => {
-                this.modalBudget.style.display = 'none';
-            }, 1000);
-            this.modalBudget.classList.remove('showModal');
-        });
+        this.addCloseClasses(this.closeModalBudget, this.modalBudget);
+        this.addCloseClasses(this.closeModalScroll, this.modalBalance);
+        this.addCloseClasses(this.closeModalExpense, this.modalExpenses);
 
-        this.closeModalScroll.addEventListener('click', () => {
-            this.modalBalance.classList.add('hideModal');
-            setTimeout(() => {
-                this.modalBalance.style.display = 'none';
-            }, 1000);
-            this.modalBalance.classList.remove('showModal');
-        });
-
-        this.closeModalExpense.addEventListener('click', () => {
-            this.modalExpenses.classList.add('hideModal');
-            setTimeout(() => {
-                this.modalExpenses.style.display = 'none';
-            }, 1000);
-            this.modalExpenses.classList.remove('showModal');
-        });
-
-        this.add.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.modalBudget.classList.add('showModal');
-            this.modalBudget.style.display = 'flex';
-            this.modalBudget.classList.remove('hideModal');
-        });
-
-        this.addScroll.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.modalBalance.classList.add('showModal');
-            this.modalBalance.style.display = 'flex';
-            this.modalBalance.classList.remove('hideModal');
-        });
-
-        this.addExpenses.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.modalExpenses.classList.add('showModal');
-            this.modalExpenses.style.display = 'flex';
-            this.modalExpenses.classList.remove('hideModal');
-        });
+        this.addListenerOnAddTrigger(this.add, this.modalBudget);
+        this.addListenerOnAddTrigger(this.addScroll, this.modalBalance);
+        this.addListenerOnAddTrigger(this.addExpenses, this.modalExpenses);
 
         this.addInUlBudget.addEventListener('click', () => {
             this.budgetList.innerHTML += `
@@ -164,20 +160,33 @@ class rootElement extends helloPage {
             localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) + parseInt(this.counterBudget.value));
             localStorage.setItem('budgetList', this.budgetList.innerHTML);
             this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) + parseInt(this.counterBudget.value);
+            this.addListenersRange();
         });
 
         this.addInUlExpense.addEventListener('click', () => {
-            this.expenseList.innerHTML += `
+            if (+this.counterExpense.value <= +this.budget.innerHTML) {
+                this.expenseList.innerHTML += `
                 <li>
                     <div>${this.itemExpense.value}</div>
                     <div>${this.counterExpense.value}</div>
                 </li>
             `;
-            this.expense.innerHTML -= this.counterExpense.value;
-            localStorage.setItem('expense', this.expense.innerHTML);
-            localStorage.setItem('expenseList', this.expenseList.innerHTML);
-            localStorage.setItem('counterIncome', parseInt(this.budget.innerHTML) - parseInt(this.expense.innerHTML));
-            this.budget.innerHTML = parseInt(this.budget.innerHTML) - parseInt(this.counterExpense.value);
+                this.expense.innerHTML -= this.counterExpense.value;
+                localStorage.setItem('expense', this.expense.innerHTML);
+                localStorage.setItem('expenseList', this.expenseList.innerHTML);
+                localStorage.setItem('counterIncome', parseInt(this.budget.innerHTML) + parseInt(this.expense.innerHTML));
+                this.budget.innerHTML = parseInt(this.budget.innerHTML) - parseInt(this.counterExpense.value);
+                this.addListenersRange();
+            } else if (+this.counterExpense.value > +this.budget.innerHTML) {
+                const div = document.createElement('div');
+                div.innerHTML = 'Недостаточно средств, попробуйте взять дополнительные средства из сбережений';
+                div.style.marginTop = '7px';
+                div.style.color = 'red';
+                this.addInUlExpense.after(div);
+                setTimeout(() => {
+                    div.remove();
+                }, 2000);
+            }
         });
 
         this.addRangeButton.addEventListener('click', () => {
