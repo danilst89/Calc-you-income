@@ -259,7 +259,7 @@ class rootElement extends helloPage {
         this.addRangeButton.addEventListener('click', () => {
             if (this.rangeValue.value > 0) {
                 this.rangeValue.classList.remove('errorBorder');
-                if (this.rangeValue.value <= this.savingMoney.innerHTML) {
+                if (+this.rangeValue.value <= +this.savingMoney.innerHTML) {
                     localStorage.setItem('counterIncome', parseInt(localStorage.getItem('counterIncome')) + parseInt(this.rangeValue.value));
                     localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) - parseInt(this.rangeValue.value));
                     this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) - parseInt(this.rangeValue.value);
