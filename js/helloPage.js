@@ -43,12 +43,23 @@ class helloPage {
     onSubmit() {
         this.sendData.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.setItem('counterIncome', this.income.value);
-            localStorage.setItem('counterSaving', this.saving.value);
-            this.budget.innerHTML = this.income.value;
-            this.savingMoney.innerHTML = this.saving.value;
-            this.mainPage.style.display = 'none';
-            this.root.style.display = 'block';
+            if (this.income.value != '' && this.saving.value != '') {
+                localStorage.setItem('counterIncome', this.income.value);
+                localStorage.setItem('counterSaving', this.saving.value);
+                this.budget.innerHTML = this.income.value;
+                this.savingMoney.innerHTML = this.saving.value;
+                this.mainPage.style.display = 'none';
+                this.root.style.display = 'block';
+            } else {
+                if (this.income.value == '' && this.saving.value == '') {
+                    this.income.classList.add('errorBorder');
+                    this.saving.classList.add('errorBorder');
+                } else if (this.saving.value == '') {
+                    this.saving.classList.add('errorBorder');
+                } else if (this.income.value == '') {
+                    this.income.classList.add('errorBorder');
+                }
+            }
         });
     }
 
@@ -83,7 +94,7 @@ class rootElement extends helloPage {
         this.addAndRemoveClasses(this.modalBudget);
         this.addAndRemoveClasses(this.modalExpenses);
         this.addCounterSum();
-        this.addListenerClick();
+        this.addListeners();
         this.checkBudgetList();
         this.addListenersRange();
     }
@@ -141,7 +152,44 @@ class rootElement extends helloPage {
         });
     }
 
-    addListenerClick() {
+    addValidateOnExpenseInputs(input) {
+        input.addEventListener('input', () => {
+            if (input.value == '') {
+                input.classList.add('errorBorder');
+            } else if (input.value != '') {
+                input.classList.remove('errorBorder');
+            }
+        });
+    }
+
+    addErrorMessage(message, afterElement) {
+        const div = document.createElement('div');
+        div.innerHTML = message;
+        div.style.marginTop = '7px';
+        div.style.color = 'red';
+        afterElement.after(div);
+        setTimeout(() => {
+            div.remove();
+        }, 2000);
+    }
+
+    addValidateBudgetInput() {
+        if (this.itemBudget.value == '' && this.counterBudget.value == '') {
+            this.itemBudget.classList.add('errorBorder');
+            this.counterBudget.classList.add('errorBorder');
+        } else if (this.itemBudget.value == '') {
+            this.itemBudget.classList.add('errorBorder');
+        } else if (this.counterBudget.value == '') {
+            this.counterBudget.classList.add('errorBorder');
+        }
+    }
+
+    deleteValidateBudgetInputs() {
+        this.itemBudget.classList.remove('errorBorder');
+        this.counterBudget.classList.remove('errorBorder');
+    }
+
+    addListeners() {
         this.addCloseClasses(this.closeModalBudget, this.modalBudget);
         this.addCloseClasses(this.closeModalScroll, this.modalBalance);
         this.addCloseClasses(this.closeModalExpense, this.modalExpenses);
@@ -150,21 +198,48 @@ class rootElement extends helloPage {
         this.addListenerOnAddTrigger(this.addScroll, this.modalBalance);
         this.addListenerOnAddTrigger(this.addExpenses, this.modalExpenses);
 
+        this.addValidateOnExpenseInputs(this.itemExpense);
+        this.addValidateOnExpenseInputs(this.counterExpense);
+
+        this.addValidateOnExpenseInputs(this.itemBudget);
+        this.addValidateOnExpenseInputs(this.counterBudget);
+
+
         this.addInUlBudget.addEventListener('click', () => {
-            this.budgetList.innerHTML += `
+            if (this.itemBudget.value === '' || this.counterBudget.value === '') {
+                this.addValidateBudgetInput();
+                this.addErrorMessage('Поля не должны быть пусты', this.addInUlBudget);
+            } else {
+                this.deleteValidateBudgetInputs();
+                this.budgetList.innerHTML += `
                 <li>
                     <div>${this.itemBudget.value}</div>
                     <div>${this.counterBudget.value}</div>
                 </li>
-            `;
-            localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) + parseInt(this.counterBudget.value));
-            localStorage.setItem('budgetList', this.budgetList.innerHTML);
-            this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) + parseInt(this.counterBudget.value);
-            this.addListenersRange();
+                `;
+                localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) + parseInt(this.counterBudget.value));
+                localStorage.setItem('budgetList', this.budgetList.innerHTML);
+                this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) + parseInt(this.counterBudget.value);
+                this.addListenersRange();
+                document.querySelectorAll('.modalBudget .divForModalBudget input').forEach(item => item.value = '');
+            }
+        });
+
+        this.counterExpense.addEventListener('input', () => {
+            if (this.counterExpense.value < 0) {
+                this.counterExpense.value = 0;
+            }
         });
 
         this.addInUlExpense.addEventListener('click', () => {
-            if (+this.counterExpense.value <= +this.budget.innerHTML) {
+            if (this.itemExpense.value == '' || this.counterExpense.value == '') {
+                this.addValidateExpenseInput();
+                this.addErrorMessage('Поля не должны быть пусты', this.addInUlExpense);
+            } else if (+this.counterExpense.value > +this.budget.innerHTML) {
+                this.deleteValidateExpenseInputs();
+                this.addErrorMessage('Недостаточно средств, попробуйте взять дополнительные средства из сбережений', this.addInUlExpense);
+            } else if (+this.counterExpense.value <= +this.budget.innerHTML) {
+                this.deleteValidateExpenseInputs();
                 this.expenseList.innerHTML += `
                 <li>
                     <div>${this.itemExpense.value}</div>
@@ -177,31 +252,67 @@ class rootElement extends helloPage {
                 localStorage.setItem('counterIncome', parseInt(this.budget.innerHTML) + parseInt(this.expense.innerHTML));
                 this.budget.innerHTML = parseInt(this.budget.innerHTML) - parseInt(this.counterExpense.value);
                 this.addListenersRange();
-            } else if (+this.counterExpense.value > +this.budget.innerHTML) {
-                const div = document.createElement('div');
-                div.innerHTML = 'Недостаточно средств, попробуйте взять дополнительные средства из сбережений';
-                div.style.marginTop = '7px';
-                div.style.color = 'red';
-                this.addInUlExpense.after(div);
-                setTimeout(() => {
-                    div.remove();
-                }, 2000);
+                document.querySelectorAll('.modalExpenses .divForModalBudget input').forEach(item => item.value = '');
             }
         });
 
         this.addRangeButton.addEventListener('click', () => {
-            if (this.rangeValue.value >= 0) {
-                localStorage.setItem('counterIncome', parseInt(localStorage.getItem('counterIncome')) + parseInt(this.rangeValue.value));
-                localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) - parseInt(this.rangeValue.value));
-                this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) - parseInt(this.rangeValue.value);
-                this.budget.innerHTML = parseInt(this.budget.innerHTML) + parseInt(this.rangeValue.value);
-            } else {
-                localStorage.setItem('counterIncome', parseInt(localStorage.getItem('counterIncome')) + parseInt(this.rangeValue.value));
-                localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) - parseInt(this.rangeValue.value));
-                this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) - parseInt(this.rangeValue.value);
-                this.budget.innerHTML = parseInt(this.budget.innerHTML) + parseInt(this.rangeValue.value);
+            if (this.rangeValue.value > 0) {
+                this.rangeValue.classList.remove('errorBorder');
+                if (this.rangeValue.value <= this.savingMoney.innerHTML) {
+                    localStorage.setItem('counterIncome', parseInt(localStorage.getItem('counterIncome')) + parseInt(this.rangeValue.value));
+                    localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) - parseInt(this.rangeValue.value));
+                    this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) - parseInt(this.rangeValue.value);
+                    this.budget.innerHTML = parseInt(this.budget.innerHTML) + parseInt(this.rangeValue.value);
+                } else {
+                    this.addErrorMessage('Сумма больше текущих сбережений', this.addRangeButton);
+                    this.rangeValue.classList.add('errorBorder');
+                }
+            } else if (this.rangeValue.value < 0) {
+                debugger;
+                this.rangeValue.classList.remove('errorBorder');
+                if (-this.rangeValue.value <= this.budget.innerHTML) {
+                    localStorage.setItem('counterIncome', parseInt(localStorage.getItem('counterIncome')) + parseInt(this.rangeValue.value));
+                    localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) - parseInt(this.rangeValue.value));
+                    this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) - parseInt(this.rangeValue.value);
+                    this.budget.innerHTML = parseInt(this.budget.innerHTML) + parseInt(this.rangeValue.value);
+                } else {
+                    this.addErrorMessage('Сумма больше текущего бюджета', this.addRangeButton);
+                    this.rangeValue.classList.add('errorBorder');
+                }
+            } else if (this.rangeValue.value == '') {
+                this.addErrorMessage('Поле не должно быть пустым', this.addRangeButton);
+                this.rangeValue.classList.add('errorBorder');
             }
         });
+
+        this.addListenerRangeInput();
+    }
+
+    addListenerRangeInput() {
+        this.rangeValue.addEventListener('input', () => {
+            if (this.rangeValue.value == '') {
+                this.rangeValue.classList.add('errorBorder');
+            } else {
+                this.rangeValue.classList.remove('errorBorder');
+            }
+        });
+    }
+
+    addValidateExpenseInput() {
+        if (this.itemExpense.value == '' && this.counterExpense.value == '') {
+            this.itemExpense.classList.add('errorBorder');
+            this.counterExpense.classList.add('errorBorder');
+        } else if (this.itemExpense.value == '') {
+            this.itemExpense.classList.add('errorBorder');
+        } else if (this.counterExpense.value == '') {
+            this.counterExpense.classList.add('errorBorder');
+        }
+    }
+
+    deleteValidateExpenseInputs() {
+        this.itemExpense.classList.remove('errorBorder');
+        this.counterExpense.classList.remove('errorBorder');
     }
 
     checkBudgetList() {

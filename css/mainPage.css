@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Open Sans', sans-serif;
+    user-select: none;
 }
 
 #mainPage {
@@ -27,6 +28,17 @@
     animation-name: show;
     animation-duration: 1.5s;
     white-space: nowrap;
+}
+
+.delete {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+.displayFlex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #mainPage input {
@@ -309,6 +321,10 @@
     cursor: pointer;
     background-color: rgb(195, 195, 195);
     color: #000;
+}
+
+.errorBorder {
+    border: 2px solid red;
 }
 
 @keyframes slideUp {
