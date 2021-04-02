@@ -1,13 +1,13 @@
 // helloPage
 
 
-class helloPage {
+class rootClass {
     constructor() {
         this.mainPage = document.querySelector('#mainPage');
         this.root = document.querySelector('#root');
         this.income = document.querySelector('#income');
         this.saving = document.querySelector('#saving');
-        this.sendData = document.querySelector('#sendHelloPage');
+        this.sendData = document.querySelector('.sendHelloPage');
         this.budget = document.querySelector('.budgetCounter');
         this.add = document.querySelector('.add');
         this.addScroll = document.querySelector('.addScroll');
@@ -33,11 +33,69 @@ class helloPage {
         this.expense = document.querySelector('.expenseCounter');
     }
 
+    addErrorMessage(message, afterElement) {
+        const div = document.createElement('div');
+        div.innerHTML = message;
+        div.style.marginTop = '7px';
+        div.style.color = 'red';
+        afterElement.after(div);
+        setTimeout(() => {
+            div.remove();
+        }, 2000);
+    }
+
     checkLocalStorage() {
         if (localStorage.getItem('counterIncome') && localStorage.getItem('counterSaving')) {
             this.mainPage.style.display = 'none';
             this.root.style.display = 'block';
         }
+    }
+
+    addAndRemoveClasses(selector) {
+        selector.classList.add('hideModal');
+        selector.style.display = 'none';
+        selector.classList.remove('showModal');
+    }
+
+    addListenerOnAddTrigger(elementListener, elementWhoNeedDisplayFlex) {
+        elementListener.addEventListener('click', (e) => {
+            e.preventDefault();
+            elementWhoNeedDisplayFlex.classList.add('showModal');
+            elementWhoNeedDisplayFlex.style.display = 'flex';
+            elementWhoNeedDisplayFlex.classList.remove('hideModal');
+        });
+    }
+
+    addCloseClasses(elementListener, elementWhoNeedDisplayNone, inputsClassListDelete) {
+        elementListener.addEventListener('click', () => {
+            elementWhoNeedDisplayNone.classList.add('hideModal');
+            setTimeout(() => {
+                elementWhoNeedDisplayNone.style.display = 'none';
+                inputsClassListDelete.forEach(item => {
+                item.classList.remove('errorBorder');
+            });
+            }, 1000);
+            elementWhoNeedDisplayNone.classList.remove('showModal');
+        });
+    }
+
+    addValidateOnExpenseInputs(input) {
+        input.addEventListener('input', () => {
+            if (input.value == '') {
+                input.classList.add('errorBorder');
+            } else if (input.value != '') {
+                input.classList.remove('errorBorder');
+            }
+        });
+    }
+
+    addInnerHTML(selectorInner, item, counter) {
+        selectorInner.innerHTML += `
+            <li>
+                <div>${item.value}</div>
+                <div>${counter.value}</div>
+            </li>
+        `;
     }
 
     onSubmit() {
@@ -59,51 +117,65 @@ class helloPage {
                 } else if (this.income.value == '') {
                     this.income.classList.add('errorBorder');
                 }
+                this.addErrorMessage('Поля не должны быть пусты', this.sendData);
             }
         });
+    };
+
+    addValidateInputs(item, counter) {
+        if (item.value == '' && counter.value == '') {
+            item.classList.add('errorBorder');
+            counter.classList.add('errorBorder');
+        } else if (item.value == '') {
+            item.classList.add('errorBorder');
+        } else if (counter.value == '') {
+            counter.classList.add('errorBorder');
+        }
     }
 
-    render() {
-        this.root.style.display = 'none';
-        // Проверка localstorage
-        this.checkLocalStorage()
-        // Добавление на select обработчиков
-        // Навешивание обработчика на кнопку
-        this.onSubmit();
-    }
-}
-
-class rootElement extends helloPage {
-    constructor() {
-        super();
-    }
-
-    addAndRemoveClasses(selector) {
-        selector.classList.add('hideModal');
-        selector.style.display = 'none';
-        selector.classList.remove('showModal');
+    deleteValidateInputs(item, counter) {
+        item.classList.remove('errorBorder');
+        counter.classList.remove('errorBorder');
     }
 
     addCounterSum() {
         this.budget.innerHTML = localStorage.getItem('counterIncome');
         this.savingMoney.innerHTML = localStorage.getItem('counterSaving');
+    };
+
+    checkInnerList() {
+        if (localStorage.getItem('budgetList')) {
+            this.budgetList.innerHTML = localStorage.getItem('budgetList');
+        }
+        if (localStorage.getItem('expenseList')) {
+            this.expenseList.innerHTML = localStorage.getItem('expenseList');
+        }
+        if (localStorage.getItem('expense')) {
+            this.expense.innerHTML = (localStorage.getItem('expense'));
+        }
     }
 
     render() {
-        this.addAndRemoveClasses(this.modalBalance);
-        this.addAndRemoveClasses(this.modalBudget);
-        this.addAndRemoveClasses(this.modalExpenses);
-        this.addCounterSum();
-        this.addListeners();
-        this.checkBudgetList();
-        this.addListenersRange();
+        this.root.style.display = 'none';
+        // Проверка localstorage
+        this.checkLocalStorage();
+        // Навешивание обработчика на кнопку
+        this.onSubmit();
+        this.addCounterSum()
+    }
+}
+class rootElement extends rootClass {
+    constructor() {
+        super();
     }
 
+    // scroll
     setAttributesScrol() {
         this.rangeInput.setAttribute('max', this.savingMoney.innerHTML);
         this.rangeInput.setAttribute('min', -this.budget.innerHTML);
     }
 
+    // scroll
     addListenersRange() {
         this.rangeInput.removeEventListener('input', () => {
             this.rangeValue.value = this.rangeInput.value;
@@ -133,66 +205,17 @@ class rootElement extends helloPage {
         this.setAttributesScrol();
     }
 
-    addCloseClasses(elementListener, elementWhoNeedDisplayNone) {
-        elementListener.addEventListener('click', () => {
-            elementWhoNeedDisplayNone.classList.add('hideModal');
-            setTimeout(() => {
-                elementWhoNeedDisplayNone.style.display = 'none';
-            }, 1000);
-            elementWhoNeedDisplayNone.classList.remove('showModal');
-        });
-    }
-
-    addListenerOnAddTrigger(elementListener, elementWhoNeedDisplayFlex) {
-        elementListener.addEventListener('click', (e) => {
-            e.preventDefault();
-            elementWhoNeedDisplayFlex.classList.add('showModal');
-            elementWhoNeedDisplayFlex.style.display = 'flex';
-            elementWhoNeedDisplayFlex.classList.remove('hideModal');
-        });
-    }
-
-    addValidateOnExpenseInputs(input) {
-        input.addEventListener('input', () => {
-            if (input.value == '') {
-                input.classList.add('errorBorder');
-            } else if (input.value != '') {
-                input.classList.remove('errorBorder');
-            }
-        });
-    }
-
-    addErrorMessage(message, afterElement) {
-        const div = document.createElement('div');
-        div.innerHTML = message;
-        div.style.marginTop = '7px';
-        div.style.color = 'red';
-        afterElement.after(div);
-        setTimeout(() => {
-            div.remove();
-        }, 2000);
-    }
-
-    addValidateBudgetInput() {
-        if (this.itemBudget.value == '' && this.counterBudget.value == '') {
-            this.itemBudget.classList.add('errorBorder');
-            this.counterBudget.classList.add('errorBorder');
-        } else if (this.itemBudget.value == '') {
-            this.itemBudget.classList.add('errorBorder');
-        } else if (this.counterBudget.value == '') {
-            this.counterBudget.classList.add('errorBorder');
-        }
-    }
-
-    deleteValidateBudgetInputs() {
+    //budget
+    deleteValidateInputs() {
         this.itemBudget.classList.remove('errorBorder');
         this.counterBudget.classList.remove('errorBorder');
     }
 
+    // каша
     addListeners() {
-        this.addCloseClasses(this.closeModalBudget, this.modalBudget);
-        this.addCloseClasses(this.closeModalScroll, this.modalBalance);
-        this.addCloseClasses(this.closeModalExpense, this.modalExpenses);
+        this.addCloseClasses(this.closeModalBudget, this.modalBudget, [this.itemBudget, this.counterBudget]);
+        this.addCloseClasses(this.closeModalScroll, this.modalBalance, [this.rangeValue]);
+        this.addCloseClasses(this.closeModalExpense, this.modalExpenses, [this.itemExpense, this.counterExpense]);
 
         this.addListenerOnAddTrigger(this.add, this.modalBudget);
         this.addListenerOnAddTrigger(this.addScroll, this.modalBalance);
@@ -207,16 +230,11 @@ class rootElement extends helloPage {
 
         this.addInUlBudget.addEventListener('click', () => {
             if (this.itemBudget.value === '' || this.counterBudget.value === '') {
-                this.addValidateBudgetInput();
+                this.addValidateInputs(this.itemBudget, this.counterBudget);
                 this.addErrorMessage('Поля не должны быть пусты', this.addInUlBudget);
             } else {
-                this.deleteValidateBudgetInputs();
-                this.budgetList.innerHTML += `
-                <li>
-                    <div>${this.itemBudget.value}</div>
-                    <div>${this.counterBudget.value}</div>
-                </li>
-                `;
+                this.deleteValidateInputs(this.itemBudget, this.counterBudget);
+                this.addInnerHTML(this.budgetList, this.itemBudget, this.counterBudget);
                 localStorage.setItem('counterSaving', parseInt(localStorage.getItem('counterSaving')) + parseInt(this.counterBudget.value));
                 localStorage.setItem('budgetList', this.budgetList.innerHTML);
                 this.savingMoney.innerHTML = parseInt(this.savingMoney.innerHTML) + parseInt(this.counterBudget.value);
@@ -232,25 +250,21 @@ class rootElement extends helloPage {
         });
 
         this.addInUlExpense.addEventListener('click', () => {
+            debugger;
             if (this.itemExpense.value == '' || this.counterExpense.value == '') {
-                this.addValidateExpenseInput();
+                this.addValidateInputs(this.itemExpense, this.counterExpense);
                 this.addErrorMessage('Поля не должны быть пусты', this.addInUlExpense);
             } else if (+this.counterExpense.value > +this.budget.innerHTML) {
-                this.deleteValidateExpenseInputs();
+                this.deleteValidateInputs(this.itemExpense, this.counterExpense);
                 this.addErrorMessage('Недостаточно средств, попробуйте взять дополнительные средства из сбережений', this.addInUlExpense);
             } else if (+this.counterExpense.value <= +this.budget.innerHTML) {
-                this.deleteValidateExpenseInputs();
-                this.expenseList.innerHTML += `
-                <li>
-                    <div>${this.itemExpense.value}</div>
-                    <div>${this.counterExpense.value}</div>
-                </li>
-            `;
+                this.deleteValidateInputs(this.itemExpense, this.counterExpense);
+                this.addInnerHTML(this.expenseList, this.itemExpense, this.counterExpense);
                 this.expense.innerHTML -= this.counterExpense.value;
-                localStorage.setItem('expense', this.expense.innerHTML);
-                localStorage.setItem('expenseList', this.expenseList.innerHTML);
-                localStorage.setItem('counterIncome', parseInt(this.budget.innerHTML) + parseInt(this.expense.innerHTML));
                 this.budget.innerHTML = parseInt(this.budget.innerHTML) - parseInt(this.counterExpense.value);
+                localStorage.setItem('expense', this.expense.innerHTML);
+                localStorage.setItem('counterIncome', this.budget.innerHTML);
+                localStorage.setItem('expenseList', this.expenseList.innerHTML);
                 this.addListenersRange();
                 document.querySelectorAll('.modalExpenses .divForModalBudget input').forEach(item => item.value = '');
             }
@@ -269,7 +283,6 @@ class rootElement extends helloPage {
                     this.rangeValue.classList.add('errorBorder');
                 }
             } else if (this.rangeValue.value < 0) {
-                debugger;
                 this.rangeValue.classList.remove('errorBorder');
                 if (-this.rangeValue.value <= this.budget.innerHTML) {
                     localStorage.setItem('counterIncome', parseInt(localStorage.getItem('counterIncome')) + parseInt(this.rangeValue.value));
@@ -289,6 +302,7 @@ class rootElement extends helloPage {
         this.addListenerRangeInput();
     }
 
+    // scroll
     addListenerRangeInput() {
         this.rangeValue.addEventListener('input', () => {
             if (this.rangeValue.value == '') {
@@ -299,36 +313,27 @@ class rootElement extends helloPage {
         });
     }
 
-    addValidateExpenseInput() {
-        if (this.itemExpense.value == '' && this.counterExpense.value == '') {
-            this.itemExpense.classList.add('errorBorder');
-            this.counterExpense.classList.add('errorBorder');
-        } else if (this.itemExpense.value == '') {
-            this.itemExpense.classList.add('errorBorder');
-        } else if (this.counterExpense.value == '') {
-            this.counterExpense.classList.add('errorBorder');
-        }
-    }
-
-    deleteValidateExpenseInputs() {
-        this.itemExpense.classList.remove('errorBorder');
-        this.counterExpense.classList.remove('errorBorder');
-    }
-
-    checkBudgetList() {
-        if (localStorage.getItem('budgetList')) {
-            this.budgetList.innerHTML = localStorage.getItem('budgetList');
-        }
-        if (localStorage.getItem('expenseList')) {
-            this.expenseList.innerHTML = localStorage.getItem('expenseList');
-        }
-        if (localStorage.getItem('expense')) {
-            this.expense.innerHTML = (localStorage.getItem('expense'));
-        }
+    render() {
+        this.addAndRemoveClasses(this.modalBalance);
+        this.addAndRemoveClasses(this.modalBudget);
+        this.addAndRemoveClasses(this.modalExpenses);
+        this.checkInnerList();
+        this.addListeners();
+        this.addListenersRange();
     }
 }
 
-const hello = new helloPage();
+class Budget extends rootClass {
+    constructor() {
+
+    }
+
+    render() {
+        
+    }
+}
+
+const hello = new rootClass();
 hello.render();
 
 const rootExtension = new rootElement();
